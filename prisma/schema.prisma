@@ -4,19 +4,18 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Users {
   id            Int             @id @default(autoincrement())
   username      String
   nationality   String          @default("")
-  age           Int
-  riotId        String          @default("")
   email         String          @unique
   password      String
-  rank          String          @default("")
+  phoneNumber   String
   tokens        tokens[]
   role          UserRole        @default(user)
   UserTeam      UserTeam?

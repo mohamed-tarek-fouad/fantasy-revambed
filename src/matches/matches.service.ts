@@ -11,8 +11,8 @@ import { UpdateMatchDto } from './dtos/updateMatch.dto';
 export class MatchesService {
   constructor(
     private prisma: PrismaService,
-    @Inject(CacheModule) private cacheManager: Cache,
-  ) {}
+  ) // @Inject(CacheModule) private cacheManager: Cache,
+  {}
   async createMatch(matchDto: CreateMatchDto) {
     try {
       const match = await this.prisma.matches.create({

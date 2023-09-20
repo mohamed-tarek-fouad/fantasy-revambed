@@ -11,8 +11,7 @@ import { AddKDADto } from './dtos/addKDA.dto';
 @Injectable()
 export class TeamsService {
   constructor(
-    private prisma: PrismaService,
-    @Inject(CacheModule) private cacheManager: Cache,
+    private prisma: PrismaService, // @Inject(CacheModule) private cacheManager: Cache,
   ) {}
   async createTeam(createTeamDto: CreateTeamDto) {
     try {
@@ -24,7 +23,7 @@ export class TeamsService {
       const team = await this.prisma.team.create({
         data: createTeamDto,
       });
-      await this.cacheManager.del('teams');
+      // await this.cacheManager.del('teams');
       return { ...team, message: 'user has been created successfully' };
     } catch (err) {
       return err;
@@ -42,8 +41,8 @@ export class TeamsService {
         where: { teamName: id },
         data: updateTeamDto,
       });
-      await this.cacheManager.del('teams');
-      await this.cacheManager.del(`team${id}`);
+      // await this.cacheManager.del('teams');
+      // await this.cacheManager.del(`team${id}`);
       return { ...updatedTeam, message: 'team updated successfully' };
     } catch (err) {
       return err;
@@ -61,8 +60,8 @@ export class TeamsService {
       await this.prisma.team.delete({
         where: { teamName: id },
       });
-      await this.cacheManager.del('teams');
-      await this.cacheManager.del(`team${id}`);
+      // await this.cacheManager.del('teams');
+      // await this.cacheManager.del(`team${id}`);
       return { message: 'team deleted successfully' };
     } catch (err) {
       return err;
@@ -70,12 +69,12 @@ export class TeamsService {
   }
   async allTeams() {
     try {
-      const isCached: object = await this.cacheManager.get('teams');
-      if (isCached) {
-        return { teams: isCached, message: 'fetched all teams successfully' };
-      }
+      // const isCached: object = await this.cacheManager.get('teams');
+      // if (isCached) {
+      //   return { teams: isCached, message: 'fetched all teams successfully' };
+      // }
       const teams = await this.prisma.team.findMany({});
-      await this.cacheManager.set('teams', teams);
+      // await this.cacheManager.set('teams', teams);
       return { teams, message: 'fetched all teams sucessfully' };
     } catch (err) {
       return err;
@@ -83,14 +82,14 @@ export class TeamsService {
   }
   async teamById(id: string) {
     try {
-      const isCached: object = await this.cacheManager.get(`team${id}`);
-      if (isCached) {
-        return { team: isCached, message: 'fetched team successfully' };
-      }
+      // const isCached: object = await this.cacheManager.get(`team${id}`);
+      // if (isCached) {
+      //   return { team: isCached, message: 'fetched team successfully' };
+      // }
       const team = await this.prisma.team.findUnique({
         where: { teamName: id },
       });
-      await this.cacheManager.set(`team${id}`, team);
+      // await this.cacheManager.set(`team${id}`, team);
       return { team, message: 'fetched team sucessfully' };
     } catch (err) {
       return err;

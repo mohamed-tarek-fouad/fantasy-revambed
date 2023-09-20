@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsInt,
   IsNotEmpty,
+  IsPhoneNumber,
   IsPositive,
   IsString,
   MaxLength,
@@ -36,12 +37,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   nationality: string;
-
   @IsNotEmpty()
-  @IsPositive()
-  @IsInt()
-  age: number;
-
-  @IsNotEmpty()
-  riotId: string;
+  @IsPhoneNumber()
+  phoneNumber: string;
 }

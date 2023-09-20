@@ -14,8 +14,8 @@ import { UniquePlayerPerRole } from './functions/uniquePlayerPerRole';
 export class UserTeamService {
   constructor(
     private prisma: PrismaService,
-    @Inject(CacheModule) private cacheManager: Cache,
-  ) {}
+  ) // @Inject(CacheModule) private cacheManager: Cache,
+  {}
   async createUserTeam(
     toplanerId: string,
     junglerId: string,
@@ -158,7 +158,7 @@ export class UserTeamService {
         delete userTeam.sup1Id;
         delete userTeam.sup2Id;
         delete userTeam.captinId;
-        await this.cacheManager.del(`userTeam${req.user.userId}`);
+        // await this.cacheManager.del(`userTeam${req.user.userId}`);
         return {
           userTeam,
           message: 'team has been created successfully',
@@ -255,7 +255,7 @@ export class UserTeamService {
       delete appliedBudget.sup1Id;
       delete appliedBudget.sup2Id;
       delete appliedBudget.captinId;
-      await this.cacheManager.del(`userTeam${req.user.userId}`);
+      // await this.cacheManager.del(`userTeam${req.user.userId}`);
       return {
         userTeam: appliedBudget,
         message: 'Edits has been applied successfully',
@@ -267,12 +267,12 @@ export class UserTeamService {
 
   async userTeamById(req) {
     try {
-      const cached: object = await this.cacheManager.get(
-        `userTeam${req.user.userId}`,
-      );
-      if (cached) {
-        return { userteam: cached, message: 'fetched team successfully' };
-      }
+      // const cached: object = await this.cacheManager.get(
+      //   `userTeam${req.user.userId}`,
+      // );
+      // if (cached) {
+      //   return { userteam: cached, message: 'fetched team successfully' };
+      // }
       const userTeam = await this.prisma.userTeam.findUnique({
         where: {
           userId: req.user.userId,

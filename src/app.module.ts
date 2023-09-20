@@ -36,13 +36,13 @@ import * as CacheStore from 'cache-manager-ioredis';
       inject: [ConfigService],
     }),
     ConfigModule.forRoot(),
-    CacheModule.register({
-      isGlobal: true,
-      store: CacheStore,
-      host: 'redis',
-      port: process.env.REDIS,
-      ttl: 60 * 60 * 6,
-    }),
+    // CacheModule.register({
+    //   isGlobal: true,
+    //   store: CacheStore,
+    //   host: 'redis',
+    //   port: process.env.REDIS,
+    //   ttl: 60 * 60 * 6,
+    // }),
   ],
 
   controllers: [],

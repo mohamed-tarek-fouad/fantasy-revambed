@@ -5,20 +5,19 @@ import { Cache } from 'cache-manager';
 @Injectable()
 export class UsersService {
   constructor(
-    private prisma: PrismaService,
-    @Inject(CacheModule) private cacheManager: Cache,
+    private prisma: PrismaService, // @Inject(CacheModule) private cacheManager: Cache,
   ) {}
   async allUsers() {
     try {
-      const isCached = await this.cacheManager.get('users');
-      if (isCached) {
-        return { user: isCached, message: 'fetched all users successfully' };
-      }
+      // const isCached = await this.cacheManager.get('users');
+      // if (isCached) {
+      //   return { user: isCached, message: 'fetched all users successfully' };
+      // }
       const users = await this.prisma.users.findMany({});
       if (users.length === 0) {
         throw new HttpException("user does'nt exist", HttpStatus.BAD_REQUEST);
       }
-      await this.cacheManager.set('users', users);
+      // await this.cacheManager.set('users', users);
       return { user: users, message: 'fetched all users successfully' };
     } catch (err) {
       return err;
@@ -27,11 +26,11 @@ export class UsersService {
 
   async userById(id: string) {
     try {
-      const isCached: object = await this.cacheManager.get(`user${id}`);
+      // const isCached: object = await this.cacheManager.get(`user${id}`);
 
-      if (isCached) {
-        return { user: isCached, message: 'fetched all users successfully' };
-      }
+      // if (isCached) {
+      //   return { user: isCached, message: 'fetched all users successfully' };
+      // }
       const userFound = await this.prisma.users.findUnique({
         where: {
           id: parseInt(id),
@@ -45,9 +44,9 @@ export class UsersService {
       }
 
       delete userFound.password;
-      await this.cacheManager.set(`user${id}`, {
-        user: userFound,
-      });
+      // await this.cacheManager.set(`user${id}`, {
+      //   user: userFound,
+      // });
       return { user: userFound, message: 'user fetched successfully' };
     } catch (err) {
       return err;

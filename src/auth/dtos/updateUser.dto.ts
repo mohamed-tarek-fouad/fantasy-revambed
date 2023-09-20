@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsOptional,
+  IsPhoneNumber,
   IsString,
   MaxLength,
   MinLength,
@@ -41,11 +42,8 @@ export class UpdateUserDto {
   @IsNotEmpty()
   nationality: string;
 
-  @IsNotEmpty()
   @IsOptional()
-  age: number;
-
   @IsNotEmpty()
-  @IsOptional()
-  riotId: string;
+  @IsPhoneNumber()
+  phoneNumber: string;
 }
