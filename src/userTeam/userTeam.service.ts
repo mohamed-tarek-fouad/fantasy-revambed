@@ -10,24 +10,23 @@ import { checkTwoPlayersFromSameTeam } from './functions/twoPLayersTeam';
 import { playerRole } from './functions/checkRole';
 import { captinIdExists } from './functions/captinID';
 import { UniquePlayerPerRole } from './functions/uniquePlayerPerRole';
+import { CreateUserTeamDto } from './dtos/createUserTeam.dto';
 @Injectable()
 export class UserTeamService {
   constructor(
-    private prisma: PrismaService,
-  ) // @Inject(CacheModule) private cacheManager: Cache,
-  {}
-  async createUserTeam(
-    toplanerId: string,
-    junglerId: string,
-    midlanerId: string,
-    botlanerId: string,
-    supporterId: string,
-    sup1Id: string,
-    sup2Id: string,
-    captinId: string,
-    req,
-  ) {
+    private prisma: PrismaService, // @Inject(CacheModule) private cacheManager: Cache,
+  ) {}
+  async createUserTeam(userTeamDto: CreateUserTeamDto, req) {
     try {
+      const toplanerId = userTeamDto.toplanerId;
+      const junglerId = userTeamDto.junglerId;
+      const midlanerId = userTeamDto.midlanerId;
+      const botlanerId = userTeamDto.botlanerId;
+      const supporterId = userTeamDto.supporterId;
+      const sup1Id = userTeamDto.sup1Id;
+      const sup2Id = userTeamDto.sup2Id;
+      const captinId = userTeamDto.captinId;
+
       const comingTeam = [
         parseInt(toplanerId),
         parseInt(junglerId),

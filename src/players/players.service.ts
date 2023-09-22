@@ -7,12 +7,12 @@ import { CreatePlayerDto } from './dtos/createPlayer.dto';
 import { UpdatePlayerDto } from './dtos/updatePlayer.dto';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
+import { Lane } from '@prisma/client';
 @Injectable()
 export class PlayersService {
   constructor(
-    private prisma: PrismaService,
-  ) // @Inject(CacheModule) private cacheManager: Cache,
-  {}
+    private prisma: PrismaService, // @Inject(CacheModule) private cacheManager: Cache,
+  ) {}
   async createPlayer(createPlayerDto: CreatePlayerDto) {
     try {
       const player = await this.prisma.players.create({
@@ -61,7 +61,7 @@ export class PlayersService {
       return err;
     }
   }
-  async allPlayers() {
+  async allPlayers(lane: Lane) {
     try {
       // const isCached: object = await this.cacheManager.get('players');
       // if (isCached) {
@@ -70,7 +70,9 @@ export class PlayersService {
       //     message: 'fetched all players successfully',
       //   };
       // }
-      const player = await this.prisma.players.findMany({});
+      const player = await this.prisma.players.findMany({
+        where: { lane: lane },
+      });
       // await this.cacheManager.set('players', player);
       return { player, message: 'fetched all players sucessfully' };
     } catch (err) {

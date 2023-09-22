@@ -4,40 +4,19 @@ import { Controller, Post, Get, Req, Param } from '@nestjs/common';
 import { UserTeamService } from './userTeam.service';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './../jwtAuthGuard';
-import { Query } from '@nestjs/common/decorators';
+import { Body, Query } from '@nestjs/common/decorators';
+import { CreateUserTeamDto } from './dtos/createUserTeam.dto';
 
 @Controller('userTeam')
 export class UserTeamController {
   constructor(private userTeamService: UserTeamService) {}
   @UseGuards(JwtAuthGuard)
-  @Post(
-    'createUserTeam/:toplanerId/:junglerId/:midlanerId/:botlanerId/:supporterId/:sup1Id/:sup2Id/:captinId',
-  )
-  createTeamUser(
-    @Param('toplanerId') toplanerId: string,
-    @Param('junglerId') junglerId: string,
-    @Param('midlanerId') midlanerId: string,
-    @Param('botlanerId') botlanerId: string,
-    @Param('supporterId') supporterId: string,
-    @Param('sup1Id') sup1Id: string,
-    @Param('sup2Id') sup2Id: string,
-    @Param('captinId') captinId: string,
-    @Req() req,
-  ) {
-    return this.userTeamService.createUserTeam(
-      toplanerId,
-      junglerId,
-      midlanerId,
-      botlanerId,
-      supporterId,
-      sup1Id,
-      sup2Id,
-      captinId,
-      req,
-    );
+  @Post('createUserTeam')
+  createTeamUser(@Body() userTeamDto: CreateUserTeamDto, @Req() req) {
+    return this.userTeamService.createUserTeam(userTeamDto, req);
   }
   @UseGuards(JwtAuthGuard)
-  @Post('applyCard/:tripleCaptin/:allIn/:teamFan')
+  @Post('applyCard')
   applyCard(
     @Query('tripleCaptin') tripleCaptin: boolean,
     @Query('allIn') allIn: boolean,
