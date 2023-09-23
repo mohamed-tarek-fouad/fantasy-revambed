@@ -13,7 +13,7 @@ export class TeamsService {
   constructor(
     private prisma: PrismaService, // @Inject(CacheModule) private cacheManager: Cache,
   ) {}
-  async createTeam(createTeamDto: CreateTeamDto) {
+  async createTeam(createTeamDto: CreateTeamDto, image) {
     try {
       const verifyExistance = await this.prisma.team.findUnique({
         where: { teamName: createTeamDto.teamName },
@@ -21,7 +21,7 @@ export class TeamsService {
       if (verifyExistance)
         throw new HttpException('team does exist', HttpStatus.BAD_REQUEST);
       const team = await this.prisma.team.create({
-        data: createTeamDto,
+        data: { ...createTeamDto, image: `/uploads/${image[0].filename}` },
       });
       // await this.cacheManager.del('teams');
       return { ...team, message: 'user has been created successfully' };
@@ -73,7 +73,9 @@ export class TeamsService {
       // if (isCached) {
       //   return { teams: isCached, message: 'fetched all teams successfully' };
       // }
-      const teams = await this.prisma.team.findMany({});
+      const teams = await this.prisma.team.findMany({
+        include: { player: true },
+      });
       // await this.cacheManager.set('teams', teams);
       return { teams, message: 'fetched all teams sucessfully' };
     } catch (err) {
@@ -88,6 +90,7 @@ export class TeamsService {
       // }
       const team = await this.prisma.team.findUnique({
         where: { teamName: id },
+        include: { player: true },
       });
       // await this.cacheManager.set(`team${id}`, team);
       return { team, message: 'fetched team sucessfully' };

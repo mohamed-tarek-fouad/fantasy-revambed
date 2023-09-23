@@ -26,6 +26,7 @@ model Users {
 model Players {
   id          Int         @id @default(autoincrement())
   playerName  String
+  image       String
   nationality String
   cost        Int
   lane        Lane
@@ -45,6 +46,7 @@ model Players {
 
 model Team {
   teamName String    @id
+  image    String
   player   Players[]
   team1    Matches[] @relation("team1")
   team2    Matches[] @relation("team2")

@@ -13,10 +13,10 @@ export class PlayersService {
   constructor(
     private prisma: PrismaService, // @Inject(CacheModule) private cacheManager: Cache,
   ) {}
-  async createPlayer(createPlayerDto: CreatePlayerDto) {
+  async createPlayer(createPlayerDto: CreatePlayerDto, image) {
     try {
       const player = await this.prisma.players.create({
-        data: createPlayerDto,
+        data: { ...createPlayerDto, image: `/uploads/${image[0].filename}` },
       });
       // await this.cacheManager.del('players');
       return { ...player, message: 'user has been created successfully' };

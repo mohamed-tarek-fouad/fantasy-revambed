@@ -11,6 +11,8 @@ import { JwtAuthGuard } from './jwtAuthGuard';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as CacheStore from 'cache-manager-ioredis';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
     LeaguesModule,
@@ -43,6 +45,9 @@ import * as CacheStore from 'cache-manager-ioredis';
     //   port: process.env.REDIS,
     //   ttl: 60 * 60 * 6,
     // }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
   ],
 
   controllers: [],
