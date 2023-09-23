@@ -86,7 +86,20 @@ export class AuthService {
       const user = await this.prisma.users.create({
         data: userDto,
       });
-      return { ...user, message: 'user has been created successfully' };
+      const token = await this.prisma.tokens.create({
+        data: {
+          userId: user.id,
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        },
+      });
+      delete user.password;
+      return {
+        ...user,
+        access_token: this.jwtServise.sign({
+          user: { userId: user.id, role: user.role, tokenId: token.id },
+        }),
+        message: 'user has been created successfully',
+      };
     } catch (err) {
       return err;
     }
