@@ -21,6 +21,7 @@ export class PlayersService {
           image: `/uploads/${image[0].filename}`,
           cost: Number(createPlayerDto.cost),
         },
+        include: { team: true },
       });
       // await this.cacheManager.del('players');
       return { ...player, message: 'user has been created successfully' };
@@ -76,6 +77,7 @@ export class PlayersService {
       // }
       const player = await this.prisma.players.findMany({
         where: { lane: lane },
+        include: { team: true },
       });
       // await this.cacheManager.set('players', player);
       return { player, message: 'fetched all players sucessfully' };
