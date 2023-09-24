@@ -18,14 +18,14 @@ export class UserTeamService {
   ) {}
   async createUserTeam(userTeamDto: CreateUserTeamDto, req) {
     try {
-      const toplanerId = userTeamDto.toplanerId;
-      const junglerId = userTeamDto.junglerId;
-      const midlanerId = userTeamDto.midlanerId;
-      const botlanerId = userTeamDto.botlanerId;
-      const supporterId = userTeamDto.supporterId;
-      const sup1Id = userTeamDto.sup1Id;
-      const sup2Id = userTeamDto.sup2Id;
-      const captinId = userTeamDto.captinId;
+      const toplanerId = userTeamDto.toplaner;
+      const junglerId = userTeamDto.jungler;
+      const midlanerId = userTeamDto.midlaner;
+      const botlanerId = userTeamDto.botlaner;
+      const supporterId = userTeamDto.supporter;
+      const sup1Id = userTeamDto.sup1;
+      const sup2Id = userTeamDto.sup2;
+      const captinId = userTeamDto.captin;
 
       const comingTeam = [
         parseInt(toplanerId),

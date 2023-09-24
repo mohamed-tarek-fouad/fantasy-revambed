@@ -2,26 +2,26 @@
 import { IsNotEmpty } from 'class-validator';
 export class CreateUserTeamDto {
   @IsNotEmpty()
-  toplanerId: string;
+  toplaner: string;
 
   @IsNotEmpty()
-  junglerId: string;
+  jungler: string;
 
   @IsNotEmpty()
-  midlanerId: string;
+  midlaner: string;
 
   @IsNotEmpty()
-  botlanerId: string;
+  botlaner: string;
 
   @IsNotEmpty()
-  supporterId: string;
+  supporter: string;
 
   @IsNotEmpty()
-  sup1Id: string;
+  sup1: string;
 
   @IsNotEmpty()
-  sup2Id: string;
+  sup2: string;
 
   @IsNotEmpty()
-  captinId: string;
+  captin: string;
 }
