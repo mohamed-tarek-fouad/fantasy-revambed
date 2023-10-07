@@ -62,8 +62,8 @@ export class TeamsController {
     return this.teamsService.teamById(id);
   }
 
-  @Post('addKDA/:playerId')
-  addKda(@Body() addKDADto: AddKDADto, @Param('playerId') playerId: string) {
-    return this.teamsService.addKDA(addKDADto, playerId);
-  }
+  // @Post('addKDA/:playerId')
+  // addKda(@Body() addKDADto: AddKDADto, @Param('playerId') playerId: string) {
+  //   return this.teamsService.addKDA(addKDADto, playerId);
+  // }
 }

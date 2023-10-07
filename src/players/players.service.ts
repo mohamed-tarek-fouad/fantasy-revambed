@@ -32,13 +32,13 @@ export class PlayersService {
   async updatePlayer(updatePlayerDto: UpdatePlayerDto, id: string) {
     try {
       const validatePlayer = await this.prisma.players.findUnique({
-        where: { id: parseInt(id) },
+        where: { playerName: id },
       });
       if (!validatePlayer) {
         throw new HttpException("player doesn't exist", HttpStatus.BAD_REQUEST);
       }
       const updatedPlayer = await this.prisma.players.update({
-        where: { id: parseInt(id) },
+        where: { playerName: id },
         data: updatePlayerDto,
       });
       // await this.cacheManager.del('players');
@@ -51,13 +51,13 @@ export class PlayersService {
   async deletePlayer(id: string) {
     try {
       const validatePlayer = await this.prisma.players.findUnique({
-        where: { id: parseInt(id) },
+        where: { playerName: id },
       });
       if (!validatePlayer) {
         throw new HttpException("player doesn't exist", HttpStatus.BAD_REQUEST);
       }
       await this.prisma.players.delete({
-        where: { id: parseInt(id) },
+        where: { playerName: id },
       });
       // await this.cacheManager.del('players');
       // await this.cacheManager.del(`player${id}`);

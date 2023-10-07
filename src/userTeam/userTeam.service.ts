@@ -11,6 +11,8 @@ import { playerRole } from './functions/checkRole';
 import { captinIdExists } from './functions/captinID';
 import { UniquePlayerPerRole } from './functions/uniquePlayerPerRole';
 import { CreateUserTeamDto } from './dtos/createUserTeam.dto';
+import * as xlsx from 'xlsx';
+import { ExcelDto } from './dtos/excel.dto';
 @Injectable()
 export class UserTeamService {
   constructor(
@@ -28,13 +30,13 @@ export class UserTeamService {
       const captinId = userTeamDto.captin;
 
       const comingTeam = [
-        parseInt(toplanerId),
-        parseInt(junglerId),
-        parseInt(midlanerId),
-        parseInt(botlanerId),
-        parseInt(supporterId),
-        parseInt(sup1Id),
-        parseInt(sup2Id),
+        toplanerId,
+        junglerId,
+        midlanerId,
+        botlanerId,
+        supporterId,
+        sup1Id,
+        sup2Id,
       ];
       captinIdExists(comingTeam, captinId, sup1Id, sup2Id);
       UniquePlayerPerRole(
@@ -48,37 +50,35 @@ export class UserTeamService {
       );
       const players = await this.prisma.players.findMany({
         where: {
-          id: {
+          playerName: {
             in: [
-              parseInt(toplanerId),
-              parseInt(junglerId),
-              parseInt(midlanerId),
-              parseInt(botlanerId),
-              parseInt(supporterId),
-              parseInt(sup1Id),
-              parseInt(sup2Id),
+              toplanerId,
+              junglerId,
+              midlanerId,
+              botlanerId,
+              supporterId,
+              sup1Id,
+              sup2Id,
             ],
           },
         },
       });
 
       const toplaner = players.find(
-        (player) => player.id === parseInt(toplanerId),
+        (player) => player.playerName === toplanerId,
       );
-      const jungler = players.find(
-        (player) => player.id === parseInt(junglerId),
-      );
+      const jungler = players.find((player) => player.playerName === junglerId);
       const midlaner = players.find(
-        (player) => player.id === parseInt(midlanerId),
+        (player) => player.playerName === midlanerId,
       );
       const botlaner = players.find(
-        (player) => player.id === parseInt(botlanerId),
+        (player) => player.playerName === botlanerId,
       );
       const supporter = players.find(
-        (player) => player.id === parseInt(supporterId),
+        (player) => player.playerName === supporterId,
       );
-      const sup1 = players.find((player) => player.id === parseInt(sup1Id));
-      const sup2 = players.find((player) => player.id === parseInt(sup2Id));
+      const sup1 = players.find((player) => player.playerName === sup1Id);
+      const sup2 = players.find((player) => player.playerName === sup2Id);
 
       const team = [
         toplaner,
@@ -127,15 +127,15 @@ export class UserTeamService {
       if (!checkUserTeamExist || checkUserTeamExist === null) {
         const userTeam = await this.prisma.userTeam.create({
           data: {
-            toplanerId: parseInt(toplanerId),
-            junglerId: parseInt(junglerId),
-            midlanerId: parseInt(midlanerId),
-            botlanerId: parseInt(botlanerId),
-            supporterId: parseInt(supporterId),
-            sup1Id: parseInt(sup1Id),
-            sup2Id: parseInt(sup2Id),
+            toplanerId: toplanerId,
+            junglerId: junglerId,
+            midlanerId: midlanerId,
+            botlanerId: botlanerId,
+            supporterId: supporterId,
+            sup1Id: sup1Id,
+            sup2Id: sup2Id,
             userId: req.user.userId,
-            captinId: parseInt(captinId),
+            captinId: captinId,
             budget: 100000000 - totalMoney,
           },
           include: {
@@ -165,7 +165,7 @@ export class UserTeamService {
       }
       //*********if there is team*********
       let points = 0;
-      let diffrence: number[] = [];
+      let diffrence = [];
       //teamfan status check
       if (!checkUserTeamExist.teamFanStatus) {
         diffrence = comingTeam.filter((x) => !previousTeam.includes(x));
@@ -177,15 +177,15 @@ export class UserTeamService {
       const userTeam = await this.prisma.userTeam.update({
         where: { userId: req.user.userId },
         data: {
-          toplanerId: parseInt(toplanerId),
-          junglerId: parseInt(junglerId),
-          midlanerId: parseInt(midlanerId),
-          botlanerId: parseInt(botlanerId),
-          supporterId: parseInt(supporterId),
-          sup1Id: parseInt(sup1Id),
-          sup2Id: parseInt(sup2Id),
+          toplanerId: toplanerId,
+          junglerId: junglerId,
+          midlanerId: midlanerId,
+          botlanerId: botlanerId,
+          supporterId: supporterId,
+          sup1Id: sup1Id,
+          sup2Id: sup2Id,
           userId: req.user.userId,
-          captinId: parseInt(captinId),
+          captinId: captinId,
           transfers:
             checkUserTeamExist.transfers - diffrence.length < 0
               ? 0
@@ -340,6 +340,49 @@ export class UserTeamService {
       return err;
     }
   }
+  async importExcel(sheet, excelDto: ExcelDto) {
+    const file = xlsx.readFile(sheet[0].path);
+    console.log(excelDto);
+    const sheets = file.SheetNames;
+    const data: any = [];
+    for (let i = 0; i < sheets.length; i++) {
+      const temp = xlsx.utils.sheet_to_json(file.Sheets[file.SheetNames[i]]);
+      temp.forEach((res: any) => {
+        const {
+          Player,
+          Team,
+          Games,
+          Winrate,
+          KDA,
+          Avgkills,
+          Avgdeaths,
+          Avgassists,
+          CSM,
+          MVP,
+          VSPM,
+          FB,
+          POINTS,
+        } = res;
+        data.push({
+          playerId: Player,
+          games: parseInt(Games),
+          winRate: Winrate,
+          KDA: parseFloat(KDA),
+          avgKills: parseFloat(Avgkills),
+          avgAssists: parseFloat(Avgassists),
+          avgDeaths: parseFloat(Avgdeaths),
+          CSM: parseFloat(CSM),
+          MVP: MVP === '1' ? true : false,
+          VSPM: parseFloat(VSPM),
+          FB: FB === '1' ? true : false,
+          points: parseInt(POINTS),
+          week: parseInt(excelDto.week),
+        });
+      });
+    }
+    const playersKDA = await this.prisma.playerKDA.createMany(data);
+    return { playersKDA };
+  }
   @Cron(CronExpression.EVERY_WEEK)
   async addPoints() {
     try {
@@ -375,11 +418,11 @@ export class UserTeamService {
             AND: [
               {
                 OR: [
-                  { toplanerId: parseInt(Object.keys(map)[player]) },
-                  { junglerId: parseInt(Object.keys(map)[player]) },
-                  { midlanerId: parseInt(Object.keys(map)[player]) },
-                  { botlanerId: parseInt(Object.keys(map)[player]) },
-                  { supporterId: parseInt(Object.keys(map)[player]) },
+                  { toplanerId: Object.keys(map)[player] },
+                  { junglerId: Object.keys(map)[player] },
+                  { midlanerId: Object.keys(map)[player] },
+                  { botlanerId: Object.keys(map)[player] },
+                  { supporterId: Object.keys(map)[player] },
                 ],
               },
               { allInStatus: false },
@@ -397,13 +440,13 @@ export class UserTeamService {
             AND: [
               {
                 OR: [
-                  { toplanerId: parseInt(Object.keys(map)[player]) },
-                  { junglerId: parseInt(Object.keys(map)[player]) },
-                  { midlanerId: parseInt(Object.keys(map)[player]) },
-                  { botlanerId: parseInt(Object.keys(map)[player]) },
-                  { supporterId: parseInt(Object.keys(map)[player]) },
-                  { sup1Id: parseInt(Object.keys(map)[player]) },
-                  { sup2Id: parseInt(Object.keys(map)[player]) },
+                  { toplanerId: Object.keys(map)[player] },
+                  { junglerId: Object.keys(map)[player] },
+                  { midlanerId: Object.keys(map)[player] },
+                  { botlanerId: Object.keys(map)[player] },
+                  { supporterId: Object.keys(map)[player] },
+                  { sup1Id: Object.keys(map)[player] },
+                  { sup2Id: Object.keys(map)[player] },
                 ],
               },
               { allInStatus: true },
@@ -422,13 +465,13 @@ export class UserTeamService {
             AND: [
               {
                 OR: [
-                  { toplanerId: parseInt(Object.keys(map)[player]) },
-                  { junglerId: parseInt(Object.keys(map)[player]) },
-                  { midlanerId: parseInt(Object.keys(map)[player]) },
-                  { botlanerId: parseInt(Object.keys(map)[player]) },
-                  { supporterId: parseInt(Object.keys(map)[player]) },
-                  { sup1Id: parseInt(Object.keys(map)[player]) },
-                  { sup2Id: parseInt(Object.keys(map)[player]) },
+                  { toplanerId: Object.keys(map)[player] },
+                  { junglerId: Object.keys(map)[player] },
+                  { midlanerId: Object.keys(map)[player] },
+                  { botlanerId: Object.keys(map)[player] },
+                  { supporterId: Object.keys(map)[player] },
+                  { sup1Id: Object.keys(map)[player] },
+                  { sup2Id: Object.keys(map)[player] },
                 ],
               },
               { allInStatus: true },

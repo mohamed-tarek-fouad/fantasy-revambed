@@ -24,8 +24,7 @@ model Users {
 }
 
 model Players {
-  id          Int         @id @default(autoincrement())
-  playerName  String
+  playerName  String      @id
   image       String
   nationality String
   cost        Int
@@ -57,22 +56,22 @@ model UserTeam {
   budget             Int     @default(100000000)
   userId             Int     @unique
   user               Users   @relation(fields: [userId], references: [id])
-  toplanerId         Int
-  toplaner           Players @relation(fields: [toplanerId], references: [id], name: "toplaner")
-  junglerId          Int
-  jungler            Players @relation(fields: [junglerId], references: [id], name: "jungler")
-  midlanerId         Int
-  midlaner           Players @relation(fields: [midlanerId], references: [id], name: "midlaner")
-  botlanerId         Int
-  botlaner           Players @relation(fields: [botlanerId], references: [id], name: "botlaner")
-  supporterId        Int
-  supporter          Players @relation(fields: [supporterId], references: [id], name: "supporter")
-  sup1Id             Int
-  sup1               Players @relation(fields: [sup1Id], references: [id], name: "sup1")
-  sup2Id             Int
-  sup2               Players @relation(fields: [sup2Id], references: [id], name: "sup2")
-  captinId           Int
-  captin             Players @relation(fields: [captinId], references: [id], name: "captin")
+  toplanerId         String
+  toplaner           Players @relation(fields: [toplanerId], references: [playerName], name: "toplaner")
+  junglerId          String
+  jungler            Players @relation(fields: [junglerId], references: [playerName], name: "jungler")
+  midlanerId         String
+  midlaner           Players @relation(fields: [midlanerId], references: [playerName], name: "midlaner")
+  botlanerId         String
+  botlaner           Players @relation(fields: [botlanerId], references: [playerName], name: "botlaner")
+  supporterId        String
+  supporter          Players @relation(fields: [supporterId], references: [playerName], name: "supporter")
+  sup1Id             String
+  sup1               Players @relation(fields: [sup1Id], references: [playerName], name: "sup1")
+  sup2Id             String
+  sup2               Players @relation(fields: [sup2Id], references: [playerName], name: "sup2")
+  captinId           String
+  captin             Players @relation(fields: [captinId], references: [playerName], name: "captin")
   tripleCaptinStatus Boolean @default(false)
   allInStatus        Boolean @default(false)
   teamFanStatus      Boolean @default(false)
@@ -94,17 +93,21 @@ model Matches {
 }
 
 model PlayerKDA {
-  id          Int     @id @default(autoincrement())
-  playerId    Int
-  player      Players @relation(fields: [playerId], references: [id])
-  kills       Int
-  deathes     Int
-  assists     Int
-  visionScore Int
-  MVB         Boolean @default(false)
-  cs          Int
-  points      Int     @default(0)
-  week        Int
+  id         Int     @id @default(autoincrement())
+  playerId   String
+  player     Players @relation(fields: [playerId], references: [playerName])
+  games      Int
+  winRate    String
+  KDA        Float
+  avgKills   Float
+  MVB        Boolean @default(false)
+  avgAssists Float
+  CSM        Float
+  VSPM       Float
+  FB         Boolean @default(false)
+  avgDeaths  Float
+  points     Int     @default(0)
+  week       Int
 }
 
 model tokens {

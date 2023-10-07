@@ -98,20 +98,20 @@ export class TeamsService {
       return err;
     }
   }
-  async addKDA(addKDADto: AddKDADto, playerId: string) {
-    try {
-      const points =
-        2 * addKDADto.kills +
-        addKDADto.assists -
-        addKDADto.deathes +
-        Math.ceil(addKDADto.cs / 100) +
-        Math.ceil(addKDADto.visionScore / 10);
-      const kda = await this.prisma.playerKDA.create({
-        data: { ...addKDADto, playerId: parseInt(playerId), points },
-      });
-      return { ...kda, message: 'added KDA sucessfully' };
-    } catch (err) {
-      return err;
-    }
-  }
+  // async addKDA(addKDADto: AddKDADto, playerId: string) {
+  //   try {
+  //     const points =
+  //       2 * addKDADto.kills +
+  //       addKDADto.assists -
+  //       addKDADto.deathes +
+  //       Math.ceil(addKDADto.cs / 100) +
+  //       Math.ceil(addKDADto.visionScore / 10);
+  //     const kda = await this.prisma.playerKDA.create({
+  //       data: { ...addKDADto, playerId: playerId, points },
+  //     });
+  //     return { ...kda, message: 'added KDA sucessfully' };
+  //   } catch (err) {
+  //     return err;
+  //   }
+  // }
 }
